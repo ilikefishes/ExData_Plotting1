@@ -2,9 +2,11 @@
 library(data.table)
 
 ## Read in assignment data as a data table
-powerData <- fread("household_power_consumption.txt", sep = ";", na.strings = "?")
+## Supress warning messages about coercing
+powerData <- suppressWarnings(fread("household_power_consumption.txt", 
+        sep = ";", na.strings = "?"))
 
-## Set Date column as Date objects
+## Set Date column as Date class
 powerData <- powerData[, Date:=as.Date(Date,format="%d/%m/%Y")]
 
 ## Set Global Active Power column as numeric
@@ -21,7 +23,8 @@ dataByDate <- powerData[Date >= minDate & Date <= maxDate]
 rm(powerData)
 
 ## Create a new column "datetime" with the Data & Time combined
-dataByDate <- within(dataByDate, { datetime=format(paste(dataByDate$Date, dataByDate$Time)) })
+dataByDate <- within(dataByDate, { datetime=format(paste(dataByDate$Date, 
+        dataByDate$Time)) })
 
 ## Convert datetime column to POSIXct
 dataByDate <- dataByDate[, datetime:=as.POSIXct(datetime)]
@@ -30,7 +33,8 @@ dataByDate <- dataByDate[, datetime:=as.POSIXct(datetime)]
 png("plot2.png", height = 480, width = 480)
 
 ## Plot line graph
-with(dataByDate, plot(dataByDate$datetime, dataByDate$Global_active_power, type = "l", xlab="", ylab = "Global Active Power (kilowatts)"))
+with(dataByDate, plot(dataByDate$datetime, dataByDate$Global_active_power, 
+        type = "l", xlab="", ylab = "Global Active Power (kilowatts)"))
 
 ## Close png graphics device
 dev.off()

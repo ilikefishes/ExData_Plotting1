@@ -2,9 +2,11 @@
 library(data.table)
 
 ## Read in assignment data as a data table
-powerData <- fread("household_power_consumption.txt", sep = ";", na.strings = "?")
+## Supress warning messages about coercing
+powerData <- suppressWarnings(fread("household_power_consumption.txt", 
+        sep = ";", na.strings = "?"))
 
-## Set Date column as Date objects
+## Set Date column as Date class
 powerData <- powerData[, Date:=as.Date(Date,format="%d/%m/%Y")]
 
 ## Set Global Active Power column as numeric
@@ -24,7 +26,8 @@ rm(powerData)
 png("plot1.png", height = 480, width = 480)
 
 ## Plot histograph
-hist(dataByDate$Global_active_power, col = "red", xlab = "Global Active Power (kilowatts)", main = "Global Active Power")
+hist(dataByDate$Global_active_power, col = "red", 
+     xlab = "Global Active Power (kilowatts)", main = "Global Active Power")
 
 ## Close png graphics device
 dev.off()
